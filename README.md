@@ -46,3 +46,10 @@ The trade-off is that it does not do name compression. Compression requires trac
 - **Integer range checks.** Header `id`/`flags`, MX preference, SOA serial/refresh/retry/expire/minimum, and SRV priority/weight/port are all range-checked.
 - **Label length.** Domain labels longer than 63 bytes or empty labels (e.g., `"a..b"`) raise `ValueError`.
 - **IPv4/IPv6 validation.** Addresses are validated via the standard library `socket` module; invalid forms raise `ValueError`.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
